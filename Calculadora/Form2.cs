@@ -25,7 +25,7 @@ namespace Calculadora
             //this.Close();
 
             novaThread = new Thread(novoForm);
-            novaThread.SetApartmentState(ApartmentState.MTA);
+            novaThread.SetApartmentState(ApartmentState.STA);
             novaThread.Start();
         }
 
@@ -37,7 +37,7 @@ namespace Calculadora
         private void Button1_Click(object sender, EventArgs e)
         {
             novaThread = new Thread(segundoform);
-            novaThread.SetApartmentState(ApartmentState.MTA);
+            novaThread.SetApartmentState(ApartmentState.STA);
             novaThread.Start();
         }
 

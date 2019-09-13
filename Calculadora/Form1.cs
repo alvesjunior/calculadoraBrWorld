@@ -97,8 +97,14 @@ namespace Calculadora
             lbecoTotal.Text = "0";
         }
 
-        private void SaldoDevedor_Load(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
+            copiarTexto.Text = "Taxa Atual: " + txbTaxaAtual.Text + "%" + "\r\n" + "Parcelas Restantes: " + txbParcelasRestantes.Text +
+                "\r\n" + "Valor da Parcela: R$" + txbValorParcela.Text + "\r\n" + "Saldo Estimado: " + saldoEstimado.Text + "\r\n" +
+                "Nova Taxa de Juros: " + tbNovaTaxa.Text + "% \r\n" + "Nova Parcela: " + lbnovaParcela.Text + "\r\n" + "Economia por Parcela: " +
+                lbecoParcela.Text + "\r\nEconomia Total: " + lbecoTotal.Text;
+
+            Clipboard.SetText(copiarTexto.Text);
 
         }
     }
