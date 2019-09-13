@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 
 namespace Calculadora
 {
@@ -16,16 +18,22 @@ namespace Calculadora
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// objeto do tipo FolderBrowserDialog. Utilizado na interação do sistema
+        /// com o usuário na hora da escolha do diretório da base de dados a ser
+        /// pesquisada. 
+        /// </summary>
+        public FolderBrowserDialog folderDialog = new FolderBrowserDialog();
 
-        private void Label2_Click(object sender, EventArgs e)
-        {
+        //Irá armazenar o diretório recebido pelo folderDialog
+        public string diretorio;
 
-        }
+        //Arquivo de escrita 
+        public TextWriter arquivo;
 
-        private void TextBox3_TextChanged(object sender, EventArgs e)
-        {
 
-        }
+
+
 
         private void Button1_Click(object sender, EventArgs e)
         {
@@ -99,13 +107,44 @@ namespace Calculadora
 
         private void Button4_Click(object sender, EventArgs e)
         {
-            copiarTexto.Text = "Taxa Atual: " + txbTaxaAtual.Text + "%" + "\r\n" + "Parcelas Restantes: " + txbParcelasRestantes.Text +
+            txtConteudo.Text = "Taxa Atual: " + txbTaxaAtual.Text + "%" + "\r\n" + "Parcelas Restantes: " + txbParcelasRestantes.Text +
                 "\r\n" + "Valor da Parcela: R$" + txbValorParcela.Text + "\r\n" + "Saldo Estimado: " + saldoEstimado.Text + "\r\n" +
                 "Nova Taxa de Juros: " + tbNovaTaxa.Text + "% \r\n" + "Nova Parcela: " + lbnovaParcela.Text + "\r\n" + "Economia por Parcela: " +
                 lbecoParcela.Text + "\r\nEconomia Total: " + lbecoTotal.Text;
 
-            Clipboard.SetText(copiarTexto.Text);
+            Clipboard.SetText(txtConteudo.Text);
 
         }
+
+        private void ZerarValoresToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void SalvarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Arquivo texto | '.txt";
+            sfd.ShowDialog();
+
+            if(string.IsNullOrEmpty(sfd.FileName) == false)
+            {
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
+                    {
+                        writer.Write(txtConteudo.Text);
+                        writer.Flush();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Não foi possivel salvar o arquivo.", "Atenção",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        
     }
 }
