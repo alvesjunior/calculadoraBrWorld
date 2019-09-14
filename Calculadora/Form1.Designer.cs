@@ -299,6 +299,7 @@
             this.button3.TabIndex = 24;
             this.button3.Text = "Salvar";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // button4
             // 
@@ -345,6 +346,7 @@
             this.calcularToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.calcularToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.calcularToolStripMenuItem.Text = "Calcular";
+            this.calcularToolStripMenuItem.Click += new System.EventHandler(this.CalcularToolStripMenuItem_Click);
             // 
             // copiarToolStripMenuItem
             // 
@@ -352,6 +354,7 @@
             this.copiarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.copiarToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.copiarToolStripMenuItem.Text = "Copiar";
+            this.copiarToolStripMenuItem.Click += new System.EventHandler(this.CopiarToolStripMenuItem_Click);
             // 
             // zerarValoresToolStripMenuItem
             // 

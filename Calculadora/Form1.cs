@@ -145,6 +145,83 @@ namespace Calculadora
             }
         }
 
-        
+        private void CalcularToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                double taxa, parcelas, valorParcela, raiz, vp, vpPositivo, novaTaxa, novaParcela, economiaParcela, economiaTotal;
+
+                taxa = double.Parse(txbTaxaAtual.Text) / 100;
+                parcelas = double.Parse(txbParcelasRestantes.Text);
+                valorParcela = double.Parse(txbValorParcela.Text);
+                raiz = Math.Pow(1 + taxa, parcelas);
+                //valorFuturo = valorParcela * (raiz);
+
+                vp = valorPresente(taxa, parcelas, -valorParcela);
+                vpPositivo = vp * -1;
+
+                saldoEstimado.Text = "R$ " + Convert.ToString(vpPositivo.ToString("F2"));
+
+
+
+
+                /*   Calculo da nova parce      */
+                novaTaxa = double.Parse(tbNovaTaxa.Text) / 100;
+                //  tbNovaTaxa.Text = Convert.ToString(novaTaxa);
+                novaParcela = CalcNovaParcela(vpPositivo, parcelas, novaTaxa);
+                lbnovaParcela.Text = "R$ " + Convert.ToString(novaParcela.ToString("F2"));
+
+
+
+                /*   economia por parcela     */
+                economiaParcela = valorParcela - novaParcela;
+                lbecoParcela.Text = "R$ " + Convert.ToString(economiaParcela.ToString("F2"));
+
+
+
+                /*Economia total*/
+                economiaTotal = parcelas * economiaParcela;
+                lbecoTotal.Text = "R$ " + Convert.ToString(economiaTotal.ToString("F2"));
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CopiarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtConteudo.Text = "Taxa Atual: " + txbTaxaAtual.Text + "%" + "\r\n" + "Parcelas Restantes: " + txbParcelasRestantes.Text +
+               "\r\n" + "Valor da Parcela: R$" + txbValorParcela.Text + "\r\n" + "Saldo Estimado: " + saldoEstimado.Text + "\r\n" +
+               "Nova Taxa de Juros: " + tbNovaTaxa.Text + "% \r\n" + "Nova Parcela: " + lbnovaParcela.Text + "\r\n" + "Economia por Parcela: " +
+               lbecoParcela.Text + "\r\nEconomia Total: " + lbecoTotal.Text;
+
+            Clipboard.SetText(txtConteudo.Text);
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Arquivo texto | '.txt";
+            sfd.ShowDialog();
+
+            if (string.IsNullOrEmpty(sfd.FileName) == false)
+            {
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
+                    {
+                        writer.Write(txtConteudo.Text);
+                        writer.Flush();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Não foi possivel salvar o arquivo.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }
