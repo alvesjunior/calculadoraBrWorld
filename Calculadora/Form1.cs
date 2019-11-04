@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-
+using System.Threading;
+using Calculadora.Model;
 
 namespace Calculadora
 {
@@ -39,7 +40,7 @@ namespace Calculadora
         {
             try
             {
-                double taxa, parcelas, valorParcela,  raiz, vp, vpPositivo, novaTaxa, novaParcela, economiaParcela, economiaTotal;
+                double taxa, parcelas, valorParcela, raiz, vp, vpPositivo, novaTaxa, novaParcela, economiaParcela, economiaTotal;
 
                 taxa = double.Parse(txbTaxaAtual.Text) / 100;
                 parcelas = double.Parse(txbParcelasRestantes.Text);
@@ -51,6 +52,7 @@ namespace Calculadora
                 vpPositivo = vp * -1;
 
                 saldoEstimado.Text = "R$ " + Convert.ToString(vpPositivo.ToString("F2"));
+
 
 
 
@@ -72,7 +74,9 @@ namespace Calculadora
                 /*Economia total*/
                 economiaTotal = parcelas * economiaParcela;
                 lbecoTotal.Text = "R$ " + Convert.ToString(economiaTotal.ToString("F2"));
-
+                btnRefin.Visible = true;
+                groupBox1.Visible = true;
+               
             }
             catch (Exception ex)
             {
@@ -95,14 +99,7 @@ namespace Calculadora
         // zerar valores
         private void Button2_Click(object sender, EventArgs e)
         {
-            txbTaxaAtual.Text = "0";
-            txbParcelasRestantes.Text = "0";
-            txbValorParcela.Text = "0";
-            saldoEstimado.Text = "0";
-            tbNovaTaxa.Text = "0";
-            lbnovaParcela.Text = "0";
-            lbecoParcela.Text = "0";
-            lbecoTotal.Text = "0";
+
         }
 
         private void Button4_Click(object sender, EventArgs e)
@@ -127,7 +124,7 @@ namespace Calculadora
             sfd.Filter = "Arquivo texto | '.txt";
             sfd.ShowDialog();
 
-            if(string.IsNullOrEmpty(sfd.FileName) == false)
+            if (string.IsNullOrEmpty(sfd.FileName) == false)
             {
                 try
                 {
@@ -140,7 +137,7 @@ namespace Calculadora
                 catch (Exception ex)
                 {
 
-                    MessageBox.Show("Não foi possivel salvar o arquivo.", "Atenção",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("Não foi possivel salvar o arquivo.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -157,6 +154,9 @@ namespace Calculadora
                 raiz = Math.Pow(1 + taxa, parcelas);
                 //valorFuturo = valorParcela * (raiz);
 
+
+
+                // calculo flávio
                 vp = valorPresente(taxa, parcelas, -valorParcela);
                 vpPositivo = vp * -1;
 
@@ -223,5 +223,48 @@ namespace Calculadora
                 }
             }
         }
+        static double presenteValue(double rate, double nper, double pmt)
+        {
+            return pmt / rate * (1 - Math.Pow(1 + rate, -nper));
+        }
+
+        private void btnRefin_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                double valorParcela, txRefin, qtdParcela, vp, saldoDevedor, vte, taxa, economiaTotallabel, vlParcela;
+               
+             
+              
+                valorParcela = double.Parse(txbValorParcela.Text);
+                txRefin = double.Parse(tbNovaTaxa.Text) / 100;
+                qtdParcela = double.Parse(txtqqtdParcelas.Text);
+
+                vp = valorPresente(txRefin, qtdParcela, valorParcela);
+
+                lbTotalEmprestimo.Text = "R$ " + Convert.ToString(vp.ToString("F2"));
+
+                //   vlParcela = lbTotalEmprestimo.Text - saldoEstimado.Text;
+                double txatual = double.Parse(txbTaxaAtual.Text) / 100;
+                vte = valorPresente(txatual, double.Parse(txbParcelasRestantes.Text), double.Parse(txbValorParcela.Text));
+                economiaTotallabel = vp - vte;
+                lbEconomiaTotal.Text = "R$ " +  Convert.ToString(economiaTotallabel.ToString("F2"));
+                MessageBox.Show("Não informe ao cliente o valor total de troco, deixe bem claro que é um valor aproximado. \n" +
+                    "Faça o calculo e subtraia de 15% à 20% \n" +
+                    "do valor do troco","Atenção", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+            }
+            catch (Exception ex)
+            {
+                if (txtqqtdParcelas.Text == "")
+                {
+                    MessageBox.Show("Digite a quantidade de Parcelas", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                MessageBox.Show("Ops, verifique os números digitados" );
+            }
+        }
+
+     
     }
 }
